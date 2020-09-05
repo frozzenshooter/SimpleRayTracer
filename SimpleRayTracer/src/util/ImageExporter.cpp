@@ -3,6 +3,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include <util\Core.h>
+
 namespace SimpleRayTracer {
 
 
@@ -16,16 +18,26 @@ namespace SimpleRayTracer {
         delete[] m_Data;
     }
 
-    int ImageExporter::AddPixelColor(unsigned int index, Color color)
+    int ImageExporter::AddPixelColor(unsigned int index, Color color, unsigned int samplesPerPixel)
     {
         if ((index + 2) > m_Size) {
             // only inside the set images size possible
             return -1;
         }
 
-        m_Data[index] = static_cast<unsigned char>(255.999 * color.x());
-        m_Data[index + 1] = static_cast<unsigned char>(255.999 * color.y());
-        m_Data[index + 2] = static_cast<unsigned char>(255.999 * color.z());
+        auto r = color.x();
+        auto g = color.y();
+        auto b = color.z();
+
+        // Divide the color by the number of samples.
+        auto scale = 1.0 / samplesPerPixel;
+        r *= scale;
+        g *= scale;
+        b *= scale;
+
+        m_Data[index] = static_cast<unsigned char>(256 * Clamp(r, 0.0, 0.999));
+        m_Data[index + 1] = static_cast<unsigned char>(256 * Clamp(g, 0.0, 0.999));
+        m_Data[index + 2] = static_cast<unsigned char>(256 * Clamp(b, 0.0, 0.999));
 
         return 1;
     }

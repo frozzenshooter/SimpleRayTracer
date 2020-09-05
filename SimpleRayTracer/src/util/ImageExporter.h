@@ -10,7 +10,7 @@ namespace SimpleRayTracer {
         ImageExporter(unsigned int width, unsigned int height, unsigned int channelCount);
         ~ImageExporter();
 
-        int AddPixelColor(unsigned int index, Color color);
+        int AddPixelColor(unsigned int index, Color color, unsigned int samplesPerPixel);
 
         int SaveAsPng(const char* filename);
 
