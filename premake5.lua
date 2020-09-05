@@ -22,8 +22,10 @@ project "SimpleRayTracer"
 
 	files
 	{
-		"src/**.h",
-		"src/**.cpp"
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"		
+	}
+
 	}
 
 	filter "system:windows"
