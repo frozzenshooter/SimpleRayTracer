@@ -1,8 +1,11 @@
 #include <iostream>
 
 #include "util/ImageExporter.h"
-#include "util/Vec3.h"
-#include "util/Ray.h"
+#include "util/Core.h"
+
+#include "util/Color.h"
+#include "geometry/HittableList.h"
+#include "geometry/Sphere.h"
 
 using namespace SimpleRayTracer;
 
@@ -21,17 +24,14 @@ double HitSphere(const Point3& center, double radius, const Ray& ray) {
     }
 }
 
-Color RayColor(const Ray& ray) {
-    auto t = HitSphere(Point3(0, 0, -1), 0.5, ray);
-
-    if (t > 0.0) {
-        Vec3 normal = UnitVector(ray.At(t) - Point3(0, 0, -1));
-        return 0.5 * Color(normal.x() + 1, normal.y() + 1, normal.z() + 1);
+Color RayColor(const Ray& r, const Hittable& world) {
+    HitRecord rec;
+    if (world.Hit(r, 0, infinity, rec)) {
+        return 0.5 * (rec.Normal + Color(1, 1, 1));
     }
 
-    Vec3 unit_direction = UnitVector(ray.Direction());
-
-    t = 0.5 * (unit_direction.y() + 1.0);
+    Vec3 unit_direction = UnitVector(r.Direction());
+    auto t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
 }
 
@@ -42,8 +42,12 @@ int main() {
     const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
 
-    // Camera
+    // World
+    HittableList world;
+    world.Add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5));
+    world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100));
 
+    // Camera
     auto viewport_height = 2.0;
     auto viewport_width = aspect_ratio * viewport_height;
     auto focal_length = 1.0;
@@ -67,7 +71,7 @@ int main() {
             auto v = double(j) / ((double)image_height - 1);
 
             Ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-            Color pixel_color = RayColor(r);
+            Color pixel_color = RayColor(r, world);
 
             imageExporter->AddPixelColor(index, pixel_color);
             index += 3;

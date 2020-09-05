@@ -14,11 +14,11 @@ namespace SimpleRayTracer {
             auto root = sqrt(discriminant);
 
             auto temp = (-half_b - root) / a;
-
             if (temp < t_max && temp > t_min) {
                 rec.T = temp;
                 rec.Point = ray.At(rec.T);
-                rec.Normal = (rec.Point - m_Center) / m_Radius;
+                Vec3 outwardNormal = (rec.Point - m_Center) / m_Radius;
+                rec.SetFaceNormal(ray, outwardNormal);
                 return true;
             }
 
@@ -26,7 +26,8 @@ namespace SimpleRayTracer {
             if (temp < t_max && temp > t_min) {
                 rec.T = temp;
                 rec.Point = ray.At(rec.T);
-                rec.Normal = (rec.Point - m_Center) / m_Radius;
+                Vec3 outwardNormal = (rec.Point - m_Center) / m_Radius;
+                rec.SetFaceNormal(ray, outwardNormal);
                 return true;
             }
         }
