@@ -1,7 +1,7 @@
 #include <iostream>
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+
+#include "util/ImageExporter.h"
 
 int main() {
 
@@ -9,34 +9,29 @@ int main() {
 
     const int image_width = 256;
     const int image_height = 256;
-    #define CHANNEL_NUM 3
+    const int channel_count = 3;
 
     // Render
-
-    auto size = image_width * image_height * 3;
-
-    unsigned char* data = new unsigned char[size];
+    auto imageExporter = std::make_unique<SimpleRayTracer::ImageExporter>(image_width, image_height, 3);
 
     int index = 0;
     for (int j = image_height - 1; j >= 0; --j) {
+        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
         for (int i = 0; i < image_width; ++i) {
 
-            auto r = double(i) / ((double)image_width - 1);
-            auto g = double(j) / ((double)image_height - 1);
-            auto b = 0.25;
+            auto rval = double(i) / ((double)image_width - 1);
+            auto gval = double(j) / ((double)image_height - 1);
+            auto bval = 0.25;
 
-            int ir = static_cast<unsigned char>(255.999 * r);
-            int ig = static_cast<unsigned char>(255.999 * g);
-            int ib = static_cast<unsigned char>(255.999 * b);
+            SimpleRayTracer::Color pixel_color(rval, gval, bval);
 
-            data[index++] = ir;
-            data[index++] = ig;
-            data[index++] = ib;
+            imageExporter->AddPixelColor(index, pixel_color);
+            index += 3;
         }
     }
+    std::cerr << "\nDone.\n";
+  
+    imageExporter->SaveAsPng("result.png");
 
-    stbi_write_png("result.png", image_width, image_height, CHANNEL_NUM, data, image_width * CHANNEL_NUM);
-
-    delete [] data;
     return 0;
 }
