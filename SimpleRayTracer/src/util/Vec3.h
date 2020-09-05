@@ -54,11 +54,11 @@ namespace SimpleRayTracer{
             return *this *= 1 / t;
         }
 
-        double length() const {
-            return std::sqrt(length_squared());
+        double Length() const {
+            return std::sqrt(LengthSquared());
         }
 
-        double length_squared() const {
+        double LengthSquared() const {
             return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
         }
 
@@ -113,6 +113,6 @@ namespace SimpleRayTracer{
     }
 
     inline Vec3 UnitVector(Vec3 v) {
-        return v / v.length();
+        return v / v.Length();
     }
 }

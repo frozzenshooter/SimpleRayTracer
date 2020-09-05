@@ -6,31 +6,30 @@
 
 using namespace SimpleRayTracer;
 
-double HitSphere(const Point3& center, double radius, const Ray& r) {
-    Vec3 oc = r.Origin() - center;
+double HitSphere(const Point3& center, double radius, const Ray& ray) {
+    Vec3 oc = ray.Origin() - center;
+    auto a = ray.Direction().LengthSquared();
+    auto half_b = Dot(oc, ray.Direction());
+    auto c = oc.LengthSquared() - radius * radius;
+    auto discriminant = half_b * half_b - a * c;
 
-    auto a = Dot(r.Direction(), r.Direction());
-    auto b = 2.0 * Dot(oc, r.Direction());
-    auto c = Dot(oc, oc) - radius * radius;
-
-    auto discriminant = b * b - 4 * a * c;
     if (discriminant < 0) {
-        return -1.0f;
+        return -1.0;
     }
     else {
-        return (-b - sqrt(discriminant)) / (2.0 * a);
+        return (-half_b - sqrt(discriminant)) / a;
     }
 }
 
-Color RayColor(const Ray& r) {
-    auto t = HitSphere(Point3(0, 0, -1), 0.5, r);
+Color RayColor(const Ray& ray) {
+    auto t = HitSphere(Point3(0, 0, -1), 0.5, ray);
 
     if (t > 0.0) {
-        Vec3 N = UnitVector(r.At(t) - Point3(0, 0, -1));
-        return 0.5 * Color(N.x() + 1, N.y() + 1, N.z() + 1);
+        Vec3 normal = UnitVector(ray.At(t) - Point3(0, 0, -1));
+        return 0.5 * Color(normal.x() + 1, normal.y() + 1, normal.z() + 1);
     }
 
-    Vec3 unit_direction = UnitVector(r.Direction());
+    Vec3 unit_direction = UnitVector(ray.Direction());
 
     t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
