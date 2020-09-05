@@ -1,0 +1,3 @@
+[submodule "SimpleRayTracer/vendor/stb"]
+	path = SimpleRayTracer/vendor/stb
+	url = https://github.com/nothings/stb.git

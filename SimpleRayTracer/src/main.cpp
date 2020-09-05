@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "CImg.h"
+#include "stb_image_write.h"
 
 int main() {
 
@@ -11,8 +11,6 @@ int main() {
 
     // Render
 
-    cimg_library::CImg<float> image(image_width, image_height, 1, 3, 0);
-    image.normalize(0, 255);
    
    for (int j = image_height - 1; j >= 0; --j) {
         for (int i = 0; i < image_width; ++i) {
@@ -24,12 +22,9 @@ int main() {
             int ig = static_cast<int>(255.999 * g);
             int ib = static_cast<int>(255.999 * b);
 
-            const float color[] = { ir, ig, ib };
-            image.draw_point(i, j, color);
         }
     }
 
-   image.save("rendereroutput.bmp");
 
 
 }

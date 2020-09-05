@@ -26,6 +26,9 @@ project "SimpleRayTracer"
 		"%{prj.name}/src/**.cpp"		
 	}
 
+	includedirs
+	{
+		"%{prj.name}/vendor/stb/"
 	}
 
 	filter "system:windows"
