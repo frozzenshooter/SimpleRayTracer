@@ -56,6 +56,7 @@ int main() {
     const int max_depth = 50;
 
     // World
+    auto R = cos(pi / 4);
     HittableList world;
 
     auto material_ground = std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
@@ -66,12 +67,11 @@ int main() {
     world.Add(std::make_shared<Sphere>(Point3(0.0, -100.5, -1.0), 100.0, material_ground));
     world.Add(std::make_shared<Sphere>(Point3(0.0, 0.0, -1.0), 0.5, material_center));
     world.Add(std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), 0.5, material_left));
-    world.Add(std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), -0.4, material_left));
+    world.Add(std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), -0.45, material_left));
     world.Add(std::make_shared<Sphere>(Point3(1.0, 0.0, -1.0), 0.5, material_right));
 
     // Camera
-    Camera cam;
-
+    Camera cam(Point3(-2, 2, 1), Point3(0, 0, -1), Vec3(0, 1, 0), 90, aspect_ratio);
 
     // Render
     auto imageExporter = std::make_unique<SimpleRayTracer::ImageExporter>(image_width, image_height, 3);

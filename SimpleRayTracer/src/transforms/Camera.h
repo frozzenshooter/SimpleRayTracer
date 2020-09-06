@@ -5,22 +5,32 @@ namespace SimpleRayTracer {
 
     class Camera {
     public:
-        Camera()
+        Camera(
+            Point3 lookfrom,
+            Point3 lookat,
+            Vec3   vup,
+            double vfov, // vertical field-of-view in degrees
+            double aspect_ratio
+            ) 
         {
-            auto aspectRatio = 16.0 / 9.0;
-            auto viewportHeight = 2.0;
-            auto viewportWidth = aspectRatio * viewportHeight;
-            auto focalLength = 1.0;
+            auto theta = DegreesToRadians(vfov);
+            auto h = tan(theta / 2);
+            auto viewportHeight = 2.0 * h;
+            auto viewportWidth = aspect_ratio * viewportHeight;
 
-            m_Origin = Point3(0, 0, 0);
-            m_Horizontal = Vec3(viewportWidth, 0.0, 0.0);
-            m_Vertical = Vec3(0.0, viewportHeight, 0.0);
-            m_LowerLeftCorner = m_Origin - m_Horizontal / 2 - m_Vertical / 2 - Vec3(0, 0, focalLength);
+            auto w = UnitVector(lookfrom - lookat);
+            auto u = UnitVector(Cross(vup, w));
+            auto v = Cross(w, u);
+
+            m_Origin = lookfrom;
+            m_Horizontal = viewportWidth * u;
+            m_Vertical = viewportHeight * v;
+            m_LowerLeftCorner = m_Origin - m_Horizontal / 2 - m_Vertical / 2 - w;
         }
 
-        Ray GetRay(double u, double v) const 
+        Ray GetRay(double s, double t) const
         {
-            return Ray(m_Origin, m_LowerLeftCorner + u * m_Horizontal + v * m_Vertical - m_Origin);
+            return Ray(m_Origin, m_LowerLeftCorner + s * m_Horizontal + t * m_Vertical - m_Origin);
         }
 
     private:
