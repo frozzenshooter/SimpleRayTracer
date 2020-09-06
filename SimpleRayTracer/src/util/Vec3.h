@@ -139,4 +139,12 @@ namespace SimpleRayTracer{
         auto r = sqrt(1 - z * z);
         return Vec3(r * cos(a), r * sin(a), z);
     }
+
+    Vec3 RandomInHemisphere(const Vec3& normal) {
+        Vec3 inUnitSphere = RandomInUnitSphere();
+        if (Dot(inUnitSphere, normal) > 0.0) // In the same hemisphere as the normal
+            return inUnitSphere;
+        else
+            return -inUnitSphere;
+    }
 }
