@@ -1,12 +1,10 @@
 #include <iostream>
 
-#include "util/ImageExporter.h"
-#include "util/Core.h"
-
 #include "util/Color.h"
-#include "geometry/HittableList.h"
+#include "util/ImageExporter.h"
 #include "geometry/Sphere.h"
-#include <transforms\Camera.h>
+#include "geometry/HittableList.h"
+#include "transforms\Camera.h"
 
 using namespace SimpleRayTracer;
 
@@ -25,10 +23,16 @@ double HitSphere(const Point3& center, double radius, const Ray& ray) {
     }
 }
 
-Color RayColor(const Ray& r, const Hittable& world) {
+Color RayColor(const Ray& r, const Hittable& world, int depth) {
     HitRecord rec;
-    if (world.Hit(r, 0, infinity, rec)) {
-        return 0.5 * (rec.Normal + Color(1, 1, 1));
+
+    // If we've exceeded the ray bounce limit, no more light is gathered.
+    if (depth <= 0)
+        return Color(0, 0, 0);
+
+    if (world.Hit(r, 0.001, infinity, rec)) {
+        Point3 target = rec.Point + rec.Normal + RandomInUnitSphere();
+        return 0.5 * RayColor(Ray(rec.Point, target - rec.Point), world, --depth);
     }
 
     Vec3 unit_direction = UnitVector(r.Direction());
@@ -40,9 +44,10 @@ int main() {
 
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 1920;
+    const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int samples_per_pixel = 100;
+    const int max_depth = 50;
 
     // World
     HittableList world;
@@ -64,10 +69,10 @@ int main() {
 
             Color pixel_color(0, 0, 0);
             for (int s = 0; s < samples_per_pixel; ++s) {
-                auto u = (i + RandomDouble()) / (image_width - 1);
-                auto v = (j + RandomDouble()) / (image_height - 1);
+                auto u = (i + RandomDouble()) / ((double)image_width - 1);
+                auto v = (j + RandomDouble()) / ((double)image_height - 1);
                 Ray r = cam.GetRay(u, v);
-                pixel_color += RayColor(r, world);
+                pixel_color += RayColor(r, world, max_depth);
             }
             imageExporter->AddPixelColor(index, pixel_color, samples_per_pixel);
             index += 3;

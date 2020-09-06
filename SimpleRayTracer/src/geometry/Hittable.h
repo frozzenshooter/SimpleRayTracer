@@ -7,8 +7,8 @@ namespace SimpleRayTracer {
     struct HitRecord {
         Point3 Point;
         Vec3 Normal;
-        double T;
-        bool FrontFace;
+        double T = 0.00;
+        bool FrontFace = false;
 
         inline void SetFaceNormal(const Ray& ray, const Vec3& outwardNormal) {
             FrontFace = Dot(ray.Direction(), outwardNormal) < 0;

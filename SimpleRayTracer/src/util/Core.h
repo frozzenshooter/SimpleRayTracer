@@ -18,14 +18,6 @@ inline double DegreesToRadians(double degrees) {
     return degrees * pi / 180.0;
 }
 
-// Common Headers
-
-#include "ray.h"
-#include "vec3.h"
-
-
-#include <random>
-
 inline double RandomDouble() {
     static std::uniform_real_distribution<double> distribution(0.0, 1.0);
     static std::mt19937 generator;
