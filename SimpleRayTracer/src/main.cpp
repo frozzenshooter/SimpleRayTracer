@@ -31,7 +31,7 @@ Color RayColor(const Ray& r, const Hittable& world, int depth) {
         return Color(0, 0, 0);
 
     if (world.Hit(r, 0.001, infinity, rec)) {
-        Point3 target = rec.Point + rec.Normal + RandomInUnitSphere();
+        Point3 target = rec.Point + rec.Normal + RandomUnitVector();
         return 0.5 * RayColor(Ray(rec.Point, target - rec.Point), world, --depth);
     }
 

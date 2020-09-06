@@ -132,4 +132,11 @@ namespace SimpleRayTracer{
             return p;
         }
     }
+
+    Vec3 RandomUnitVector() {
+        auto a = RandomDouble(0, 2 * pi);
+        auto z = RandomDouble(-1, 1);
+        auto r = sqrt(1 - z * z);
+        return Vec3(r * cos(a), r * sin(a), z);
+    }
 }
