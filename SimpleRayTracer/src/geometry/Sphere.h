@@ -7,17 +7,18 @@ namespace SimpleRayTracer {
     class Sphere : public Hittable {
     public:
         Sphere()
-            : m_Center({ 0.0f, 0.0f, 0.0f }), m_Radius(0.00)
+            : m_Center({ 0.0f, 0.0f, 0.0f }), m_Radius(0.00), m_Material(nullptr)
         {}
 
-        Sphere(Point3 center, double radius) : m_Center(center), m_Radius(radius) {};
+        Sphere(Point3 center, double radius, std::shared_ptr<Material> material) : m_Center(center), m_Radius(radius), m_Material(material) 
+        {}
 
         virtual bool Hit(const Ray& r, double t_min, double t_max, HitRecord& rec) const override;
 
     public:
         Point3 m_Center;
         double m_Radius;
-
+        std::shared_ptr<Material> m_Material;
     };
 
     bool Sphere::Hit(const Ray& ray, double t_min, double t_max, HitRecord& rec) const
@@ -37,6 +38,7 @@ namespace SimpleRayTracer {
                 rec.Point = ray.At(rec.T);
                 Vec3 outwardNormal = (rec.Point - m_Center) / m_Radius;
                 rec.SetFaceNormal(ray, outwardNormal);
+                rec.Material = m_Material;
                 return true;
             }
 
@@ -46,6 +48,7 @@ namespace SimpleRayTracer {
                 rec.Point = ray.At(rec.T);
                 Vec3 outwardNormal = (rec.Point - m_Center) / m_Radius;
                 rec.SetFaceNormal(ray, outwardNormal);
+                rec.Material = m_Material;
                 return true;
             }
         }

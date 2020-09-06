@@ -147,4 +147,8 @@ namespace SimpleRayTracer{
         else
             return -inUnitSphere;
     }
+
+    Vec3 Reflect(const Vec3& v, const Vec3& n) {
+        return v - 2 * Dot(v, n) * n;
+    }
 }

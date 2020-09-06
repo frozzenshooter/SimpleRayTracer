@@ -4,9 +4,12 @@
 
 namespace SimpleRayTracer {
 
+    class Material;
+
     struct HitRecord {
         Point3 Point;
         Vec3 Normal;
+        std::shared_ptr<Material> Material;
         double T = 0.00;
         bool FrontFace = false;
 
