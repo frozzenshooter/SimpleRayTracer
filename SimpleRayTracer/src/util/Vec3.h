@@ -158,4 +158,12 @@ namespace SimpleRayTracer{
         Vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.LengthSquared())) * n;
         return r_out_perp + r_out_parallel;
     }
+
+    Vec3 RandomInUnitDisk() {
+        while (true) {
+            auto p = Vec3(RandomDouble(-1, 1), RandomDouble(-1, 1), 0);
+            if (p.LengthSquared() >= 1) continue;
+            return p;
+        }
+    }
 }

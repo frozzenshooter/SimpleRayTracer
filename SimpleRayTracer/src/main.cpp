@@ -71,7 +71,13 @@ int main() {
     world.Add(std::make_shared<Sphere>(Point3(1.0, 0.0, -1.0), 0.5, material_right));
 
     // Camera
-    Camera cam(Point3(-2, 2, 1), Point3(0, 0, -1), Vec3(0, 1, 0), 90, aspect_ratio);
+    Point3 lookfrom(3, 3, 2);
+    Point3 lookat(0, 0, -1);
+    Vec3 vup(0, 1, 0);
+    auto dist_to_focus = (lookfrom - lookat).Length();
+    auto aperture = 2.0;
+
+    Camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
     // Render
     auto imageExporter = std::make_unique<SimpleRayTracer::ImageExporter>(image_width, image_height, 3);
