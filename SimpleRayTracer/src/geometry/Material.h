@@ -5,6 +5,12 @@
 
 namespace SimpleRayTracer {
 
+    double Schlick(double cosine, double ref_idx) {
+        auto r0 = (1 - ref_idx) / (1 + ref_idx);
+        r0 = r0 * r0;
+        return r0 + (1 - r0) * pow((1 - cosine), 5);
+    }
+
     struct HitRecord;
 
     class Material {
@@ -64,6 +70,14 @@ namespace SimpleRayTracer {
                 return true;
             }
 
+            double reflect_prob = Schlick(cos_theta, etai_over_etat);
+            if (RandomDouble() < reflect_prob)
+            {
+                Vec3 reflected = Reflect(unit_direction, rec.Normal);
+                scattered = Ray(rec.Point, reflected);
+                return true;
+            }
+
             Vec3 refracted = Refract(unit_direction, rec.Normal, etai_over_etat);
             scattered = Ray(rec.Point, refracted);
             return true;
@@ -71,4 +85,5 @@ namespace SimpleRayTracer {
 
         double ref_idx;
     };
+
 }
