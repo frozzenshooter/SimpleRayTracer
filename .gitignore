@@ -8,7 +8,6 @@ bin/*
 
 bin-int/
 
-# Hazel files
 *.log
 
 # Visual Studio files and folder
@@ -17,6 +16,3 @@ bin-int/
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
-
-# Generated images
-*.png
